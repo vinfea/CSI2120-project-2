@@ -54,20 +54,9 @@
   )
 )
 
-;; Read the contents of a directory into a list
-;; given the directory name ----------------------------------------------
-
-(define (read-dir dir)
-  (let f ((paths (get-dir-paths dir)))
-    (if (null? paths)
-        '()
-        (cons (read-file (car paths)) (f (cdr paths)))
-    )
-  )
-)
-
 ;; Histogram methods ----------------------------------------------------
 
+;; Helper function
 (define (sum L)
   (if (null? L)
       0
@@ -75,6 +64,7 @@
   )
 )
 
+;; Histogram methods
 (define (normalize H)
   (let f ((hist H)
           (sum (sum H)))
@@ -97,24 +87,11 @@
   )
 )
 
-;; Main function for testing purposes (for now) ------------------------------
+;; Helper functions for main similarity search function---------------------
 
-(define (main)
-  (let* ((f1 "queryHistograms/Sample0.txt")
-        (f2 "queryHistograms/Sample1.txt")
-        (h1 (cdr (read-file f1)))
-        (h2 (cdr (read-file f2)))) ; assignment
-    (histogram-intersection (normalize h1) (normalize h2)) ; exec
-  )
-)
-
-
-
-;helper functions for main similarity search function------------------
-
-;compares dataset images with query image, returns list with pairs (intersection value, filename)
+; Compares dataset images with query image, returns list with pairs (intersection value, filename)
 (define (total query dir)
-    (if(null? dir)
+    (if (null? dir)
        '()
      (cons (cons
             (histogram-intersection query (normalize (cdr (read-file (car dir))))) (car dir))
@@ -123,13 +100,13 @@
     )
 )
 
-;sorts pair list from greatest to least
+; Sorts pair list from greatest to least
 (define (sort-list ls)
   (sort ls
         (lambda (a b)
           (> (car a) (car b)))))
 
-;show top n values in list
+; Show top n values in list
 (define (top ls n)
   (if (zero? n)
       '()
@@ -137,7 +114,8 @@
   )
 )
 
-;Similarity Search function ------------------------------
+; Similarity Search function ----------------------------------------------
+
 (define (similaritySearch queryHistogramFilename imageDatasetDirectory)
   (let ((query (normalize (cdr (read-file queryHistogramFilename))))
         (dir (get-dir-paths imageDatasetDirectory)))
@@ -145,4 +123,8 @@
    )
 )
 
-(similaritySearch "Sample15.txt" "imageDataset")
+(similaritySearch "queryHistograms/Sample11.txt" "imageDataset")
+
+
+
+
