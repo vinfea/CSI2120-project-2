@@ -54,23 +54,6 @@
   )
 )
 
-
-;modified read file method with cdr
-(define (get-cdr-from-file filename)
-  (letrec ((read-file
-            (lambda (filename)
-              (let ((p (open-input-file filename)))
-                (let f ((c (read p))) 
-                  (if (eof-object? c) 
-                      (begin
-                        (close-input-port p)
-                        '())
-                      (cons c (f (read p))))
-                )
-              ))))
-    (cdr (read-file filename))))
-
-
 ;; Read the contents of a directory into a list
 ;; given the directory name ----------------------------------------------
 
@@ -125,3 +108,46 @@
   )
 )
 
+
+
+;helper functions for main similarity search function
+
+;compares dataset images with query image, returns list with pairs (intersection value, filename)
+(define (total query dir)
+    (if(null? dir)
+       '()
+     (cons (cons
+            (histogram-intersection query (normalize (cdr (read-file (car dir))))) (car dir))
+           (total query (cdr dir))
+      )
+    )
+)
+
+;sorts pair list from greatest to least
+(define (sort-list ls)
+  (sort ls
+        (lambda (a b)
+          (> (car a) (car b)))))
+
+;show top n values in list
+(define (top ls n)
+  (if (zero? n)
+      '()
+      (cons (car ls) (top (cdr ls) (- n 1)))
+  )
+
+;read query histogram
+;read in the list of file paths in datadirectory
+;for each file, normalize the histogram and compute the intersection with query histogram
+;make a list with intersection, filename (mini pair)
+;add it to an outerlist
+; sort that outer list
+
+(define (similaritySearch queryHistogramFilename imageDatasetDirectory)
+  (let ((query (normalize (cdr (read-file queryHistogramFilename))))
+        (dir (get-dir-paths imageDatasetDirectory)))
+    (display (top (sort-list (total query dir)) 5))   
+   )
+)
+
+(similaritySearch "Sample0.txt" "images")
