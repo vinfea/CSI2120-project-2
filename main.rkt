@@ -54,7 +54,8 @@
   )
 )
 
-;cdr built in
+
+;modified read file method with cdr
 (define (get-cdr-from-file filename)
   (letrec ((read-file
             (lambda (filename)
@@ -79,6 +80,48 @@
         '()
         (cons (read-file (car paths)) (f (cdr paths)))
     )
+  )
+)
+
+;; Histogram methods ----------------------------------------------------
+
+(define (sum L)
+  (if (null? L)
+      0
+      (+ (car L) (sum (cdr L)))
+  )
+)
+
+(define (normalize H)
+  (let f ((hist H)
+          (sum (sum H)))
+       (if (null? hist)
+           '()
+           (cons (exact->inexact (/ (car hist) sum)) (f (cdr hist) sum))
+       )
+  )
+)
+
+(define (histogram-intersection H1 H2)
+  (if (not (equal? (length H1) (length H2)))
+      'invalid-input
+      (let f ((h1 H1) (h2 H2))
+        (if (null? h1)
+            0
+            (+ (min (car h1) (car h2)) (f (cdr h1) (cdr h2)))
+        )
+      )          
+  )
+)
+
+;; Main function for testing purposes (for now) ------------------------------
+
+(define (main)
+  (let* ((f1 "queryHistograms/Sample0.txt")
+        (f2 "queryHistograms/Sample1.txt")
+        (h1 (cdr (read-file f1)))
+        (h2 (cdr (read-file f2)))) ; assignment
+    (histogram-intersection (normalize h1) (normalize h2)) ; exec
   )
 )
 
