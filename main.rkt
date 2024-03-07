@@ -110,7 +110,7 @@
 
 
 
-;helper functions for main similarity search function
+;helper functions for main similarity search function------------------
 
 ;compares dataset images with query image, returns list with pairs (intersection value, filename)
 (define (total query dir)
@@ -135,14 +135,9 @@
       '()
       (cons (car ls) (top (cdr ls) (- n 1)))
   )
+)
 
-;read query histogram
-;read in the list of file paths in datadirectory
-;for each file, normalize the histogram and compute the intersection with query histogram
-;make a list with intersection, filename (mini pair)
-;add it to an outerlist
-; sort that outer list
-
+;Similarity Search function ------------------------------
 (define (similaritySearch queryHistogramFilename imageDatasetDirectory)
   (let ((query (normalize (cdr (read-file queryHistogramFilename))))
         (dir (get-dir-paths imageDatasetDirectory)))
@@ -150,4 +145,4 @@
    )
 )
 
-(similaritySearch "Sample0.txt" "images")
+(similaritySearch "Sample15.txt" "imageDataset")
