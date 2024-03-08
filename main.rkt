@@ -1,5 +1,10 @@
 #lang racket
 
+;; ********************************
+;; * Christa Huang (300297610)
+;; * Yuqing Ma (300325103)
+;; ********************************
+
 ;; Generate the relative path of all files within a given directory
 ;; into a list of strings -------------------------------------------------
 
