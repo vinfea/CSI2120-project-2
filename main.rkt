@@ -1,11 +1,15 @@
 #lang racket
 
-;; Generate the file paths of all files within a given directory
+;; Generate the relative path of all files within a given directory
 ;; into a list of strings -------------------------------------------------
 
 (require (lib "13.ss" "srfi"))
 
-;; Main function
+;; --- Main function ---
+
+; Input: name of a directory
+; Output: list of strings containing the relative path to each file in the directory
+
 (define (get-dir-paths dir)
   (let* ((path-list (directory-list dir))
         (string-list (pathlist->stringlist path-list))
@@ -14,7 +18,11 @@
   )  
 )
 
-;; Helper functions
+;; --- Helper functions ---
+
+; Input: list of path objects
+; Output: input list with each path converted to a string 
+
 (define (pathlist->stringlist L)
   (if (null? L)
       '()
@@ -22,12 +30,18 @@
   )    
 )
 
+; Input: list of strings, string
+; Output: concatenates the given string to each string within the list
+
 (define (concat L str)
   (if (null? L)
       '()
       (cons (string-append str "/" (car L)) (concat (cdr L) str))
   )
 )
+
+; Input: list of strings
+; Output: input list filtered to only strings containing “txt”
 
 (define (filter-txt L)
   (if (null? L)
@@ -41,6 +55,9 @@
 
 ;; Read the contents of a txt file into a list
 ;; given the filename ----------------------------------------------------
+
+; Input: filename as a string
+; Output: contents of the file as a list
 
 (define (read-file filename)
   (let ((p (open-input-file filename)))
@@ -56,7 +73,11 @@
 
 ;; Histogram methods ----------------------------------------------------
 
-;; Helper function
+;; --- Helper function ---
+
+; Input: list of numbers
+; Output: sum of the list
+
 (define (sum L)
   (if (null? L)
       0
@@ -64,7 +85,11 @@
   )
 )
 
-;; Histogram methods
+;; --- Histogram methods ---
+
+; Input: list of numbers
+; Output: input list with each number divided by the sum of the list
+
 (define (normalize H)
   (let f ((hist H)
           (sum (sum H)))
@@ -74,6 +99,10 @@
        )
   )
 )
+
+; Input: list1 of numbers, list2 of numbers
+; Restriction: list1 and list2 must be the same length
+; Output: list where each element is min(list1, list2) at each index
 
 (define (histogram-intersection H1 H2)
   (if (not (equal? (length H1) (length H2)))
