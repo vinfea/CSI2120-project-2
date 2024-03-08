@@ -123,7 +123,7 @@
    )
 )
 
-(similaritySearch "queryHistograms/Sample11.txt" "imageDataset")
+(similaritySearch "queryHistograms/q00.txt" "imageDataset")
 
 
 
