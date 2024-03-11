@@ -123,24 +123,34 @@
 
 ;; Helper functions for main similarity search function---------------------
 
-; Compares dataset images with query image, returns list with pairs (intersection value, filename)
-(define (total query dir)
+;Compares dataset images with query image, returns list with pairs (intersection value, filename)
+;Input: query list of numbers, dir list of strings 
+;Restrictions: query must be a normalized histogram list, dir must be list of image paths from dataset directory
+;Output: list of pairs (intersection number, datasetfilename string)
+
+(define (compare-all query dir)
     (if (null? dir)
        '()
      (cons (cons
             (histogram-intersection query (normalize (cdr (read-file (car dir))))) (car dir))
-           (total query (cdr dir))
+           (compare-all query (cdr dir))
       )
     )
 )
 
-; Sorts pair list from greatest to least
+; Sorts pair list from greatest to least in accordance to intersection number
+; Input: list of pairs (intersection number, datasetfilename string)
+; Output: sorted list of pairs (intersection number, datasetfilename string)
+
 (define (sort-list ls)
   (sort ls
         (lambda (a b)
           (> (car a) (car b)))))
 
 ; Show top n values in list
+; Input: list of pairs (intersection number, datasetfilename string)
+; Output: list of n pairs
+
 (define (top ls n)
   (if (zero? n)
       '()
@@ -149,15 +159,17 @@
 )
 
 ; Similarity Search function ----------------------------------------------
+;Input: string queryHistogramFilename, string imageDatasetDirectory
+;Output: list of 5 pairs
 
 (define (similaritySearch queryHistogramFilename imageDatasetDirectory)
   (let ((query (normalize (cdr (read-file queryHistogramFilename))))
         (dir (get-dir-paths imageDatasetDirectory)))
-    (display (top (sort-list (total query dir)) 5))   
+     (top (sort-list (compare-all query dir)) 5)   
    )
 )
 
-(similaritySearch "queryHistograms/q00.txt" "imageDataset")
+(similaritySearch "queryHistograms/q15.txt" "imageDataset")
 
 
 
